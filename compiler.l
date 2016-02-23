@@ -8,7 +8,7 @@
 	int PUT_NL = 1;
 	void p(char * pattern)
 	{
-		printf("%-15s L: %-3d E: %s", pattern, -1, yytext);
+		printf("%-15s L: %-3d E: %s", pattern, yylineno, yytext);
 		PUT_NL && putchar('\n');
 	}
 %}
@@ -47,10 +47,13 @@ SPACE		[ \t\n]+
 
  /* lexer matchings pairs (regex: pattern, c code: action) */
 
+/* %option warn nodefault */
+%option yylineno
 %s state1 state2
 %x ML_COMMENT STR ERROR
 %%
 
+ /* yy_push_state(STATE), yy_pop_state(), yy_top_state(), %option stack  */
 <ML_COMMENT>{
 	[^*/]*
 	"*"+[^*/]*
@@ -59,17 +62,16 @@ SPACE		[ \t\n]+
 <STR>{
 	\"		{ BEGIN(INITIAL); return STRING; }
 	\n		{ return -1; }
-	CHAR_ENCODED
+	{CHAR_ENCODED}
 	\\.
 	[^\\\n\"]+
 }
 \"			{ BEGIN(STR); }
- /*{STRING}		{ p("STRING"); }*/
 {ONLINE_COMMENT}	{ return COMMENT; }
 "/*"			{ BEGIN(ML_COMMENT); return COMMENT; }
-'{CHAR}'		{ return CHAR; }
-{FLOAT}			{ return FLOAT; }
-{INT}			{ return INT; }
+'{CHAR}'		{ yylval.ch = yytext[1]; return CHAR; }
+{FLOAT}			{ yylval.flt = atof(yytext); return FLOAT; }
+{INT}			{ yylval.nbr = atoll(yytext); return NUMBER; }
 {KEYWORD}		{ return KEYWORD; }
 {TYPE}			{ return TYPE; }
 {TYPE_SPECIFIER}	{ return TYPE_SPECIFIER; }
