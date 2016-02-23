@@ -1,1 +1,5 @@
-lex.yy.c
+lex.yy.*
+y.tab.*
+y.output
+gcc-*/
+*.o
