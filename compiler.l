@@ -18,7 +18,7 @@
 
 %option yylineno
 %option bison-bridge
-/*%option bison-locations*/
+%option bison-locations
 
  /* aliases */
 
@@ -45,7 +45,7 @@ OTHER_OPERATOR	{OPERATOR}"="
 ONLINE_COMMENT	"//".*$
 OTHER		"{"|"}"|"("|")"|"["|"]"|"="|";"|":"|"?"|"."|"&"|","|"->"
 MACRO		"#"[ \t]*(if|else|elif|endif|define|undef|pragma|include|ifdef|ifndef|line|error)
-SPACE		[ \t\n]+
+SPACE		[ \t\n\r]+
 
  /* c global defs */
 	int	n_others = 0,
@@ -87,13 +87,13 @@ SPACE		[ \t\n]+
 {OPERATOR}		{ yylval->str = strdup(yytext); return OPERATOR; }
 {MACRO}			{ yylval->str = strdup(yytext); return MACRO; }
 {ID}			{ yylval->str = strdup(yytext); return ID; }
-";"			{ return FP; }
-"("			{ return LPARAN; }
-")"			{ return RPARAN; }
-"="			{ return EQ; }
-{OTHER}			{ yylval->str = strdup(yytext); return OTHER; }
 {SPACE}			{ ++n_spaces; }
-.			{ yylval->str = strdup(yytext); ++n_unknown; return -1; }
+.			{ ++n_unknown; return *yytext; }
+ /*";"			{ return FP; }*/
+ /*"("			{ return LPARAN; }*/
+ /*")"			{ return RPARAN; }*/
+ /*"="			{ return EQ; }*/
+ /*{OTHER}			{ yylval->str = strdup(yytext); return OTHER; }*/
 
 %%
 

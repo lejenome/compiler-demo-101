@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 
-int yylex(void *);
+int yylex(void *, void *);
 extern FILE *yyin;
 extern char *yytext;
 extern int yylineno;
@@ -13,7 +13,7 @@ void yyerror(char *str) {
 
 /*%glr-parser*/
 /*%expect-rr 1*/
-/*%locations*/
+%locations
 %pure-parser
 %union {
         long long nbr;
@@ -27,23 +27,21 @@ void yyerror(char *str) {
 		TYPE_SPECIFIER BOOL OPERATOR MACRO ID OTHER
 %token <flt>	FLOAT
 %token <ch>	CHAR
-%token		IF
-		LPARAN RPARAN
-		LBRACE RBRACE
-		GT LT EQ
-		FP
+%token		IF GT LT
+
+/* HANDLE THESE ON BISON  { } ( ) [ ] = ; : ? . & , -> */
 
 %start prog
 
 %%
 /* expr, stmt, decl, fnct def */
-prog: expr FP prog
+prog: expr ';' prog
     | decl prog
     | %empty
     ;
 
-decl: type ID FP		{ printf("ID<%s>\n", $2); }
-    | type ID EQ expr FP	{ printf("ID<%s>\n", $2); }
+decl: type ID ';'		{ printf("ID<%s>\n", $2); }
+    | type ID '=' expr ';'	{ printf("ID<%s>\n", $2); }
     ;
 
 type: TYPE_SPECIFIER type	{ printf("TYPE_SPECIFIER<%s>\n", $1); }
@@ -51,7 +49,7 @@ type: TYPE_SPECIFIER type	{ printf("TYPE_SPECIFIER<%s>\n", $1); }
     | %empty
     ;
 
-expr: LPARAN expr RPARAN
+expr: '(' expr ')'
     | str
     | num
     ;
@@ -59,7 +57,7 @@ expr: LPARAN expr RPARAN
 num: NUMBER		{ printf("NUMBER<%lld>\n", $1); }
    | FLOAT		{ printf("FLOAT<%e>\n", $1); }
    | num OPERATOR num	{ printf("OP<%s>\n", $2); }
-   | LPARAN num RPARAN
+   | '(' num ')'
    ;
 
 str: str STRING		{ printf("STRING<%s>\n", $2); }
