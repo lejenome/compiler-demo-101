@@ -16,6 +16,7 @@
 	}
 %}
 
+%option debug
 %option yylineno
 %option bison-bridge
 %option bison-locations
