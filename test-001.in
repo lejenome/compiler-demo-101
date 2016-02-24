@@ -1,0 +1,6 @@
+int lol ; //lol
+signed /*COMMET
+       COMMENT2 */ int long long lol = 5 + 9 - 2 + 020 * -0xF2;
+5;
+unsigned float f = ( 5.2 * 6 ) + 9;
+char test = "lol" "olo";

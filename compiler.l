@@ -5,6 +5,9 @@
 	#include <string.h>
 	#include <malloc.h>
 
+	char str[4096];
+	char *str_pt;
+	long long int nbr;
 	int PUT_NL = 1;
 	void p(char * pattern)
 	{
@@ -13,17 +16,21 @@
 	}
 %}
 
+%option yylineno
+%option bison-bridge
+/*%option bison-locations*/
 
  /* aliases */
 
  /*  TODO: add numbers, floats suffixes from 1 or two letters: f,d,l,w,q,i,j,u */
-DIGIT		[0-9]
-NUMBER		{DIGIT}+
-INT		-?{NUMBER}
-FLOAT		{INT}"."{NUMBER}
+NUMBER		[[:digit:]]+
+DECIMAL		"-"?([[:digit:]]{-}[0])[[:digit:]]*
+HEXADECIMAL	"-"?0[xX][[:xdigit:]]+
+OCTALDECIMAL	"-"?0[0-7]+
+FLOAT		{DECIMAL}[.][[:digit:]]+
 LETTER		[a-zA-Z]
 WORD		{LETTER}+
-IDENT		({LETTER}|_)({WORD}|{NUMBER})*
+ID		({LETTER}|_)({WORD}|{NUMBER})*
 HEX		[0-9a-fA-F]
 CHAR_ENCODED	"\\\\"|"\\\""|"\\'"|"\\n"|"\\t"|"\\f"|"\\v"|"\\r"|"\\a"|"\\b"|"\\x"{HEX}{2}|"\\u"{HEX}{4}|"\\U"{HEX}{8}
 CHAR		({CHAR_ENCODED}|[^'])
@@ -48,7 +55,6 @@ SPACE		[ \t\n]+
  /* lexer matchings pairs (regex: pattern, c code: action) */
 
 /* %option warn nodefault */
-%option yylineno
 %s state1 state2
 %x ML_COMMENT STR ERROR
 %%
@@ -57,45 +63,53 @@ SPACE		[ \t\n]+
 <ML_COMMENT>{
 	[^*/]*
 	"*"+[^*/]*
-	"*"+"/"		{ BEGIN(INITIAL); return COMMENT; }
+	"*"+"/"		{ BEGIN(INITIAL); /*return COMMENT;*/ }
 }
 <STR>{
-	\"		{ BEGIN(INITIAL); return STRING; }
+	\"		{ BEGIN(INITIAL); yylval->str = strdup(str); return STRING; }
 	\n		{ return -1; }
-	{CHAR_ENCODED}
-	\\.
-	[^\\\n\"]+
+	{CHAR_ENCODED}	|
+	\\.		|
+	[^\\\n\"]+	{ strcat(str_pt, yytext); }
 }
-\"			{ BEGIN(STR); }
-{ONLINE_COMMENT}	{ return COMMENT; }
-"/*"			{ BEGIN(ML_COMMENT); return COMMENT; }
-'{CHAR}'		{ yylval.ch = yytext[1]; return CHAR; }
-{FLOAT}			{ yylval.flt = atof(yytext); return FLOAT; }
-{INT}			{ yylval.nbr = atoll(yytext); return NUMBER; }
-{KEYWORD}		{ return KEYWORD; }
-{TYPE}			{ return TYPE; }
-{TYPE_SPECIFIER}	{ return TYPE_SPECIFIER; }
-{BOOL}			{ return BOOL; }
-{OPERATOR}		{ return OPERATOR; }
-{MACRO}			{ return MACRO; }
-{IDENT}			{ return IDENT; }
-{OTHER}			{ return OTHER; }
+\"			{ BEGIN(STR); str_pt = str; *str_pt = '\0'; }
+{ONLINE_COMMENT}	{ yylval->str = strdup(yytext); /*return COMMENT;*/ }
+"/*"			{ BEGIN(ML_COMMENT); }
+'{CHAR}'		{ yylval->ch = yytext[1]; return CHAR; }
+{FLOAT}			{ yylval->flt = atof(yytext); return FLOAT; }
+{HEXADECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 16); return NUMBER; /* FIXME */}
+{OCTALDECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 8); return NUMBER; /* FIXME */}
+{DECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 10); return NUMBER; /* FIXME */}
+{KEYWORD}		{ yylval->str = strdup(yytext); return KEYWORD; }
+{TYPE}			{ yylval->str = strdup(yytext); return TYPE; }
+{TYPE_SPECIFIER}	{ yylval->str = strdup(yytext); return TYPE_SPECIFIER; }
+{BOOL}			{ yylval->str = strdup(yytext); return BOOL; }
+{OPERATOR}		{ yylval->str = strdup(yytext); return OPERATOR; }
+{MACRO}			{ yylval->str = strdup(yytext); return MACRO; }
+{ID}			{ yylval->str = strdup(yytext); return ID; }
+";"			{ return FP; }
+"("			{ return LPARAN; }
+")"			{ return RPARAN; }
+"="			{ return EQ; }
+{OTHER}			{ yylval->str = strdup(yytext); return OTHER; }
 {SPACE}			{ ++n_spaces; }
-.			{ ++n_unknown; return -1; }
+.			{ yylval->str = strdup(yytext); ++n_unknown; return -1; }
 
 %%
 
 /* main function and bottom code */
-int main(int argc, char *argv[])
+/*
+int main2(int argc, char *argv[])
 {
 	if ( argc > 1 )
 		yyin = fopen(argv[1], "r");
 	else
 		yyin = stdin;
 	int rtn;
-	while((rtn = yylex()))
+	while((rtn = yylex(&yylval)))
 		printf("%3d ", rtn);
 	printf("\n\nn_others = %d\nn_spaces = %d\nn_unknown = %d\n",
 		n_others, n_spaces, n_unknown);
 	return 0;
 }
+*/
