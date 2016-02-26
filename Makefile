@@ -9,7 +9,7 @@ $(APP): $(APP).tab.o $(APP).lex.o
 	$(CC) $(LDFLAGS) -lfl -o $@ $^
 
 %.lex.c: %.l
-	$(LEX) $<
+	$(LEX) --outfile=$(APP).lex.c $<
 %.tab.c %.tab.h: %.y
 	$(YACC) $(YFLAGS) $<
 

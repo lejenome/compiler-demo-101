@@ -1,7 +1,7 @@
 %{
 	/* to be included after flex defs and includes */
 
-	#include "y.tab.h"
+	#include "compiler.tab.h"
 	#include <string.h>
 	#include <malloc.h>
 
@@ -16,7 +16,15 @@
 	}
 %}
 
+%option outfile="compiler.lex.c"
+/*%option header-file="compiler.lex.h"*/
+/*%option tables-file="compiler.lex.dfa"*/
 %option debug
+%option backup
+%option perf-report
+%option nodefault
+%option warn
+%option verbose
 %option yylineno
 %option bison-bridge
 %option bison-locations
@@ -28,7 +36,7 @@ NUMBER		[[:digit:]]+
 DECIMAL		"-"?([[:digit:]]{-}[0])[[:digit:]]*
 HEXADECIMAL	"-"?0[xX][[:xdigit:]]+
 OCTALDECIMAL	"-"?0[0-7]+
-FLOAT		{DECIMAL}[.][[:digit:]]+
+FLOAT		{DECIMAL}([.][[:digit:]]*)?([eE][[:digit:]]+)?
 LETTER		[a-zA-Z]
 WORD		{LETTER}+
 ID		({LETTER}|_)({WORD}|{NUMBER})*
@@ -77,10 +85,10 @@ SPACE		[ \t\n\r]+
 {ONLINE_COMMENT}	{ yylval->str = strdup(yytext); /*return COMMENT;*/ }
 "/*"			{ BEGIN(ML_COMMENT); }
 '{CHAR}'		{ yylval->ch = yytext[1]; return CHAR; }
-{FLOAT}			{ yylval->flt = atof(yytext); return FLOAT; }
 {HEXADECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 16); return NUMBER; /* FIXME */}
 {OCTALDECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 8); return NUMBER; /* FIXME */}
 {DECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 10); return NUMBER; /* FIXME */}
+{FLOAT}			{ yylval->flt = atof(yytext); return FLOAT; }
 {KEYWORD}		{ yylval->str = strdup(yytext); return KEYWORD; }
 {TYPE}			{ yylval->str = strdup(yytext); return TYPE; }
 {TYPE_SPECIFIER}	{ yylval->str = strdup(yytext); return TYPE_SPECIFIER; }
@@ -88,13 +96,14 @@ SPACE		[ \t\n\r]+
 {OPERATOR}		{ yylval->str = strdup(yytext); return OPERATOR; }
 {MACRO}			{ yylval->str = strdup(yytext); return MACRO; }
 {ID}			{ yylval->str = strdup(yytext); return ID; }
-{SPACE}			{ ++n_spaces; }
+{SPACE}			{ ++n_spaces; yy_flex_debug = 0; }
 .			{ ++n_unknown; return *yytext; }
  /*";"			{ return FP; }*/
  /*"("			{ return LPARAN; }*/
  /*")"			{ return RPARAN; }*/
  /*"="			{ return EQ; }*/
  /*{OTHER}			{ yylval->str = strdup(yytext); return OTHER; }*/
+ <<EOF>>		{ return _EOF_; }
 
 %%
 
