@@ -3,3 +3,11 @@ y.tab.*
 y.output
 gcc-*/
 *.o
+*.lex.c
+*.lex.h
+*.lex.dfa
+*.tab.c
+*.tab.h
+*.dot
+*.output
+*.backup
