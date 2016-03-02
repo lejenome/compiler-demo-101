@@ -12,7 +12,8 @@
 	void p(char * pattern)
 	{
 		printf("%-15s L: %-3d E: %s", pattern, yylineno, yytext);
-		PUT_NL && putchar('\n');
+		if(PUT_NL)
+			putchar('\n');
 	}
 %}
 
@@ -33,15 +34,15 @@
 
  /*  TODO: add numbers, floats suffixes from 1 or two letters: f,d,l,w,q,i,j,u */
 NUMBER		[[:digit:]]+
-DECIMAL		"-"?([[:digit:]]{-}[0])[[:digit:]]*
-HEXADECIMAL	"-"?0[xX][[:xdigit:]]+
-OCTALDECIMAL	"-"?0[0-7]+
+DECIMAL		([[:digit:]]{-}[0])[[:digit:]]*
+HEXADECIMAL	0[xX][[:xdigit:]]+
+BIDECIMAL	0[bB][01]+
+OCTALDECIMAL	0[0-7]+
 FLOAT		{DECIMAL}([.][[:digit:]]*)?([eE][[:digit:]]+)?
 LETTER		[a-zA-Z]
 WORD		{LETTER}+
 ID		({LETTER}|_)({WORD}|{NUMBER})*
-HEX		[0-9a-fA-F]
-CHAR_ENCODED	"\\\\"|"\\\""|"\\'"|"\\n"|"\\t"|"\\f"|"\\v"|"\\r"|"\\a"|"\\b"|"\\x"{HEX}{2}|"\\u"{HEX}{4}|"\\U"{HEX}{8}
+CHAR_ENCODED	"\\\\"|"\\\""|"\\'"|"\\n"|"\\t"|"\\f"|"\\v"|"\\r"|"\\a"|"\\b"|"\\x"[[:xdigit:]]{2}|"\\u"[[:xdigit:]]{4}|"\\U"[[:xdigit:]]{8}
 CHAR		({CHAR_ENCODED}|[^'])
 STRING		"\""({CHAR_ENCODED}|[^\"])*"\""
 KEYWORD		if|else|switch|for|while|do|return|case|break|default|continue|goto|sizeof|inline|restrict
@@ -49,7 +50,8 @@ TYPE		int|float|double|char|void|_Bool|_Complex|_Imaginary
 TYPE_COMPOSED	struct|union|enum|typedef
 TYPE_SPECIFIER	short|long|signed|unsigned|register|const|volatile|auto|extern|static
 BOOL		"&&"|"||"|"!"|"!="|"=="|">"|"<"|">="|"<="
-OPERATOR	"+"|"-"|"*"|"/"|"%"|"&"|"|"|"^"|"~"|"<<"|">>"
+RL_OPERATOR	"+"|"-"|"*"|"/"|"%"
+BL_OPERATOR	"&"|"|"|"^"|"~"|"<<"|">>"
 OTHER_OPERATOR	{OPERATOR}"="
 ONLINE_COMMENT	"//".*$
 OTHER		"{"|"}"|"("|")"|"["|"]"|"="|";"|":"|"?"|"."|"&"|","|"->"
@@ -87,13 +89,15 @@ SPACE		[ \t\n\r]+
 '{CHAR}'		{ yylval->ch = yytext[1]; return CHAR; }
 {HEXADECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 16); return NUMBER; /* FIXME */}
 {OCTALDECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 8); return NUMBER; /* FIXME */}
+{BIDECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 2); return NUMBER; /* FIXME */}
 {DECIMAL}		{ yylval->nbr = strtoll(yytext, NULL, 10); return NUMBER; /* FIXME */}
 {FLOAT}			{ yylval->flt = atof(yytext); return FLOAT; }
 {KEYWORD}		{ yylval->str = strdup(yytext); return KEYWORD; }
 {TYPE}			{ yylval->str = strdup(yytext); return TYPE; }
 {TYPE_SPECIFIER}	{ yylval->str = strdup(yytext); return TYPE_SPECIFIER; }
 {BOOL}			{ yylval->str = strdup(yytext); return BOOL; }
-{OPERATOR}		{ yylval->str = strdup(yytext); return OPERATOR; }
+{RL_OPERATOR}		{ yylval->ch = *yytext; return RL_OPERATOR; }
+{BL_OPERATOR}		{ yylval->str = strdup(yytext); return BL_OPERATOR; }
 {MACRO}			{ yylval->str = strdup(yytext); return MACRO; }
 {ID}			{ yylval->str = strdup(yytext); return ID; }
 {SPACE}			{ ++n_spaces; yy_flex_debug = 0; }

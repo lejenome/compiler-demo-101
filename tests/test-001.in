@@ -1,0 +1,28 @@
+if (1) {
+  int lol, olo; // lol
+
+  signed /*COMMET
+       COMMENT2 */ int long long lol = 5 + 9 - 2 + 020 * - 0xF2;
+
+  5;
+  char e, e1 = ('a'), e2 = '\'', e3;
+
+  unsigned float f = (5.2 * 6) + 9;
+
+  char test = "lol"
+              "olo";
+
+  { 5 + 6; }
+
+  lol = -6e5 + 6. + 6.3 - -6.3e10;
+  int T[ 5 ];
+  int r = T[5];
+  // int r = 5 + T[5];
+  +-+-+-+-+-+-+ +-+-+-+-+-+- -+-+-+-+ - 5;
+  'Z' - 'a';
+  cos ( 5 );
+  log(4);
+  log2((2 * 2 * 2));
+  // ((((x)))) = ((((6 - ((((6))))))));
+  x = ((((6 - ((((6))))))));
+}
