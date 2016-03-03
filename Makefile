@@ -2,8 +2,8 @@ LEX=flex
 CC=gcc
 YACC=bison
 YFLAGS=-d -r state
-CFLAGS+=-Wall
-LDFLAGS+=-Wl,--no-as-needed -lfl -lm
+CFLAGS+=-Wall -Wno-unused
+LDFLAGS+=-Wl,--no-as-needed -lm # -lfl
 DIFF=diff
 DIFFFLAGS=--ignore-case --ignore-all-space --ignore-blank-lines  -up
 
@@ -12,8 +12,8 @@ APP=compiler
 all: $(APP)
 $(APP): $(APP).lex.o $(APP).tab.o
 	[ -e $(APP).tab.o ] \
-		&& $(CC) $(LDFLAGS) -o $@ $^ \
-		|| $(CC) $(LDFLAGS) -o $@ $<
+		&& $(CC) -o $@ $^ $(LDFLAGS) \
+		|| $(CC) -o $@ $< $(LDFLAGS)
 
 run: $(APP)
 	./$(APP)
@@ -32,7 +32,7 @@ run: $(APP)
 %.tab.c %.tab.h %.tab.o::
 	@ echo -e "\033[41m# IGNORING DEPENCEDY: $@\033[0m" 1>&2
 
-TESTS:= $(sort $(wildcard tests/*.in))
+TESTS:= $(sort $(wildcard tests/$(APP)-[0-9]*.in))
 TESTS:=$(TESTS:.in=.in.c)
 test: $(TESTS)
 tests/%.in.c: $(APP)

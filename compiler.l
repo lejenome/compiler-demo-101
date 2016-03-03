@@ -29,6 +29,7 @@
 %option yylineno
 %option bison-bridge
 %option bison-locations
+%option noyywrap
 
  /* aliases */
 

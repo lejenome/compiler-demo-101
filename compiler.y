@@ -39,7 +39,7 @@
 /*%define api.value.type {double}*/
 /*%define api.token.prefix {TK_}*/
 %union {
-        long long nbr;
+	long long nbr;
 	double flt;
 }
 %union {
