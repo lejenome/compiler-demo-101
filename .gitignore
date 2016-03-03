@@ -11,3 +11,4 @@ gcc-*/
 *.dot
 *.output
 *.backup
+*_app

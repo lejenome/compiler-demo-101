@@ -9,16 +9,16 @@ DIFFFLAGS=--ignore-case --ignore-all-space --ignore-blank-lines  -up
 
 APP=compiler
 
-all: $(APP)
-$(APP): $(APP).lex.o $(APP).tab.o
+all: $(APP)_app
+$(APP)_app: $(APP).lex.o $(APP).tab.o
 	@ echo "    LD    $(APP)"
 	@ [ -e $(APP).tab.o ] \
 		&& $(CC) -o $@ $^ $(LDFLAGS) \
 		|| $(CC) -o $@ $< $(LDFLAGS)
 
-run: $(APP)
+run: $(APP)_app
 	@ echo "    RUN   $(APP)"
-	@ ./$(APP)
+	@ ./$<
 
 %.lex.c: %.l
 	@ echo "    FLEX  $<"
@@ -43,19 +43,19 @@ run: $(APP)
 TESTS:= $(sort $(wildcard tests/$(APP)-[0-9]*.in))
 TESTS:=$(TESTS:.in=.in.c)
 test: $(TESTS)
-tests/%.in.c: $(APP)
+tests/%.in.c: $(APP)_app
 	@ echo -ne "\033[34m"
 	@ echo "##############################################################"
 	@ echo "# TEST: $@"
 	@ echo "##############################################################"
 	@ echo -ne "\033[0m"
-	@ ./$(APP) $(@:.c=)
+	@ ./$< $(@:.c=)
 	@ [ ! -e "$(@:.in.c=.out)" ] \
-		|| (./$(APP) $(@:.c=) 2>/dev/null | $(DIFF) $(DIFFFLAGS) $(@:.in.c=.out) - )
+		|| (./$< $(@:.c=) 2>/dev/null | $(DIFF) $(DIFFFLAGS) $(@:.in.c=.out) - )
 
 .NOTPARALLEL: clean test
 .PHONY: clean
 clean:
 	@ echo "    CLEAN"
-	@ -$(RM) *.o $(APP).tab.* $(APP).lex.* $(APP).dot $(APP).output $(APP) \
-		lex.backup # y.tab.* lex.yy.* y.output
+	@ -$(RM) *.o $(APP).tab.* $(APP).lex.* $(APP).dot $(APP).output \
+		$(APP)_app lex.backup # y.tab.* lex.yy.* y.output
