@@ -11,22 +11,30 @@ APP=compiler
 
 all: $(APP)
 $(APP): $(APP).lex.o $(APP).tab.o
-	[ -e $(APP).tab.o ] \
+	@ echo "    LD    $(APP)"
+	@ [ -e $(APP).tab.o ] \
 		&& $(CC) -o $@ $^ $(LDFLAGS) \
 		|| $(CC) -o $@ $< $(LDFLAGS)
 
 run: $(APP)
-	./$(APP)
+	@ echo "    RUN   $(APP)"
+	@ ./$(APP)
 
 %.lex.c: %.l
-	$(LEX) $(LFLAGS) --outfile=$(APP).lex.c $<
+	@ echo "    FLEX  $<"
+	@ $(LEX) $(LFLAGS) --outfile=$(APP).lex.c $<
 %.tab.c %.tab.h: %.y
-	$(YACC) $(YFLAGS) $<
+	@ echo "    BISON $<"
+	@ $(YACC) $(YFLAGS) $<
 
 %.tab.o: %.tab.c
-	$(CC) $(CFLAGS) -c $<
+	@ echo "    CC    $<"
+	@ [ -e "$(APP).y" ] \
+		&& $(CC) $(CFLAGS) -c $< \
+		|| true
 %.lex.o: %.lex.c %.tab.h
-	$(CC) $(CFLAGS) -c $<
+	@ echo "    CC    $<"
+	@ $(CC) $(CFLAGS) -c $<
 
 # Fallback when we still have no bison file for the app
 %.tab.c %.tab.h %.tab.o::
@@ -48,5 +56,6 @@ tests/%.in.c: $(APP)
 .NOTPARALLEL: clean test
 .PHONY: clean
 clean:
-	-$(RM) *.o $(APP).tab.* $(APP).lex.* $(APP).dot $(APP).output $(APP) \
+	@ echo "    CLEAN"
+	@ -$(RM) *.o $(APP).tab.* $(APP).lex.* $(APP).dot $(APP).output $(APP) \
 		lex.backup # y.tab.* lex.yy.* y.output

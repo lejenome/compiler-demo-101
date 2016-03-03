@@ -20,12 +20,12 @@
 %option outfile="compiler.lex.c"
 /*%option header-file="compiler.lex.h"*/
 /*%option tables-file="compiler.lex.dfa"*/
-%option debug
+/*%option debug*/
 %option backup
 %option perf-report
 %option nodefault
 %option warn
-%option verbose
+/*%option verbose*/
 %option yylineno
 %option bison-bridge
 %option bison-locations
