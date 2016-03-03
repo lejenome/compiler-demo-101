@@ -10,7 +10,7 @@
 	extern int yylex(void *, void *);
 
 	void yyerror(const char *str) {
-		printf("ERROR: LINE: %-3d MSG: %s\n", yylineno, str);
+		printf("[ERROR:%d] %s\n", yylineno, str);
 	}
 }
 %code requires {
@@ -40,11 +40,6 @@
 %start prog
 
 %%
-/* ... %dprec 1 */
-/* ... %merge <MergeFnct> */
-/* %?{ !false } "..." */
-/* { if(!false) YYERROR; } "..." */
-/* expr, stmt, decl, fnct def */
 prog	: prog ';' prog
 	| prog '\n' prog
 	| expr
