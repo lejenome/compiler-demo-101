@@ -59,6 +59,10 @@ tests/%.in.c: $(APP)_app
 llvm-c: $(APP).c
 	$(CXX) $< -o $(APP) $(shell llvm-config --cflags --libs core) \
 		-ldl -lcurses -lpthread $(CXXFLAGS) $(LDFLAGS)
+# compile llvm based app
+llvm: $(APP).cpp
+	$(CXX) $< -o $(APP) $(shell llvm-config --cxxflags --libs core) \
+		-ldl -lcurses -lpthread $(CXXFLAGS) $(LDFLAGS)
 
 .NOTPARALLEL: clean test
 .PHONY: clean
