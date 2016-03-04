@@ -1,8 +1,10 @@
 LEX=flex
 CC=gcc
+CXX=g++
 YACC=bison
 YFLAGS=-d -r state
 CFLAGS+=-Wall -Wno-unused
+CXXFLAGS+=-Wall -Wno-unused
 LDFLAGS+=-Wl,--no-as-needed -lm # -lfl
 DIFF=diff
 DIFFFLAGS=--ignore-case --ignore-all-space --ignore-blank-lines  -up
@@ -52,6 +54,11 @@ tests/%.in.c: $(APP)_app
 	@ ./$< $(@:.c=)
 	@ [ ! -e "$(@:.in.c=.out)" ] \
 		|| (./$< $(@:.c=) 2>/dev/null | $(DIFF) $(DIFFFLAGS) $(@:.in.c=.out) - )
+
+# compile llvm-c based app
+llvm-c: $(APP).c
+	$(CXX) $< -o $(APP) $(shell llvm-config --cflags --libs core) \
+		-ldl -lcurses -lpthread $(CXXFLAGS) $(LDFLAGS)
 
 .NOTPARALLEL: clean test
 .PHONY: clean
