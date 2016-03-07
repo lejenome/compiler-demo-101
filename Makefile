@@ -3,8 +3,8 @@ CC=gcc
 CXX=g++
 YACC=bison
 YFLAGS=-d -r state
-CFLAGS+=-Wall -Wno-unused
-CXXFLAGS+=-Wall -Wno-unused
+CFLAGS+=-Wall -Wno-unused -std=c11
+CXXFLAGS+=-Wall -Wno-unused -std=c++1y
 LDFLAGS+=-Wl,--no-as-needed -lm # -lfl
 DIFF=diff
 DIFFFLAGS=--ignore-case --ignore-all-space --ignore-blank-lines  -up
