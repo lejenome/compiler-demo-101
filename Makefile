@@ -12,7 +12,7 @@ DIFFFLAGS=--ignore-case --ignore-all-space --ignore-blank-lines  -up
 APP=compiler
 
 all: $(APP)_app
-$(APP)_app: $(APP).lex.o $(APP).tab.o
+$(APP)_app: $(APP).tab.o $(APP).lex.o
 	@ echo "    LD    $(APP)" >&2
 	@ [ -e $(APP).tab.o ] \
 		&& $(CC) -o $@ $^ $(LDFLAGS) \
@@ -57,11 +57,13 @@ tests/%.in.c: $(APP)_app
 
 # compile llvm-c based app
 llvm-c: $(APP).c
-	$(CXX) $< -o $(APP) $(shell llvm-config --ldflags --cflags --libs core) \
+	@ echo "    CXX   $<" >&2
+	@ $(CXX) $< -o $(APP) $(shell llvm-config --ldflags --cflags --libs core) \
 		-ldl -lcurses -lpthread $(CXXFLAGS) $(LDFLAGS)
 # compile llvm based app
 llvm: $(APP).cpp
-	$(CXX) $< -o $(APP) $(shell llvm-config --ldflags --cxxflags --libs core) \
+	@ echo "    CXX   $<" >&2
+	@ $(CXX) $< -o $(APP) $(shell llvm-config --ldflags --cxxflags --libs core) \
 		-ldl -lcurses -lpthread $(CXXFLAGS) $(LDFLAGS)
 
 .NOTPARALLEL: clean test
@@ -69,4 +71,4 @@ llvm: $(APP).cpp
 clean:
 	@ echo "    CLEAN" >&2
 	@ -$(RM) *.o $(APP).tab.* $(APP).lex.* $(APP).dot $(APP).output \
-		$(APP)_app lex.backup # y.tab.* lex.yy.* y.output
+		$(APP)_app $(APP) lex.backup # y.tab.* lex.yy.* y.output
