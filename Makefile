@@ -25,7 +25,11 @@ run: $(APP)_app
 %.lex.c: %.l
 	@ echo "    FLEX  $<" >&2
 	@ $(LEX) $(LFLAGS) --outfile=$(APP).lex.c $<
-%.tab.c %.tab.h: %.y
+%.tab.c: %.y
+	@ echo "    BISON $<" >&2
+	@ $(YACC) $(YFLAGS) $<
+
+%.tab.h: %.y
 	@ echo "    BISON $<" >&2
 	@ $(YACC) $(YFLAGS) $<
 
