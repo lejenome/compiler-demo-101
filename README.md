@@ -7,8 +7,12 @@ Tools to be used:
 - Bison (Yacc compatible alternative) to generate a parser using a grammar
 - LLVM ...
 
+Install on Ubuntu 14.04:
+```sh
+sudo apt-get install flex flex-doc bison bison-doc make-doc llvm-dev libncurses5-dev git gcc g++ clang
+```
 
-TODO:
-- [ ] Implement 50% of C99 standard Flex part
-- [ ] Implement 50% of C99 standard Bison part
-- [ ] Implement 50% of C99 standard LLVM part
+To run `calc` example:
+```sh
+make APP=calc run
+```
