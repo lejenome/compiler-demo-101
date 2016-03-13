@@ -42,7 +42,7 @@ run: $(APP)_app
 	@ echo "    CC    $<" >&2
 	@ $(CC) $(CFLAGS) -c $<
 
-# FIXME: Fallback when we still have no bison file for the app
+# FIXME Fallback when we still have no bison file for the app
 #%.tab.h::
 #	@ echo -e "\033[41m# IGNORING DEPENCEDY: $@\033[0m" 1>&2
 #%.tab.c::

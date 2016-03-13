@@ -1,6 +1,6 @@
 %{
 	/* to be included after flex defs and includes */
-	#include "sample-calc.tab.h"
+	#include "calc.tab.h"
 	#include <string.h>
 	#include <malloc.h>
 %}
