@@ -1,6 +1,5 @@
 %{
 	/* to be included after flex defs and includes */
-
 	#include "compiler.tab.h"
 	#include <string.h>
 	#include <malloc.h>
