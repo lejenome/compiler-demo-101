@@ -51,6 +51,7 @@
 %token	B_AND "&&"
 %token	B_OR "||"
 
+%left ';' '\n'
 %left "||" "&&"
 %left "<=" ">=" "==" "!=" '<' '>'
 %left '-' '+'	/* FROM LOWER */
