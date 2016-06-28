@@ -49,15 +49,17 @@ C compilers:
     - HSA Intermediate Layer: Utilisé en HSA specification
 - version ancienne (4.3.1): contienne 2,029,115 lines in the main source et 1,546,826 lines in libraries. 57,825 fichiers + 52 configuration scripts + 163 Makefiles.
 ### lexical analyser overview:
+- determiner les sous-chaine et ses classes (sous-chaine: var1, class: identificateur)
+- token = <sous-chaine, classe>
 - instruction:   i = 5 + 2 ;
-        token    | token type
-        -------- | -------------------
-        foo      | VAR
-        =        | assign operator
-        5        | number
-        +        | plus operator
-        2        | number
-        ;        | end of instruction
+        token string   | token type
+        -------------- | -------------------
+        foo            | identificateur
+        =              | assign operator
+        5              | number
+        +              | plus operator
+        2              | number
+        ;              | end of instruction
 
 ##### syntactic analyser:
 - génère AST depuis definitions du grammaire
@@ -83,13 +85,13 @@ C compilers:
 - optimizations des floats et doubles expressions dangerous because of
     precision limitation:
     - `x / 5.0` != `x * 0.2`
-    - `(x + y) - y` != `x`
-      ```c
+    - `(x + y) - y != x`
+```c
       double x = 123454.034684121687525678523745234845234874;
       double y = 45234845234.874454563246798654679865467659848655489765;
       (x + y) - y != y;
-      ```
-
+```
+- `X = Y * 0` => `X = 0` if Y is int but if float: `NaN * 0 == NaN`
 - more:
     - Wikipedia: Program_optimization
     - http://www.pobox.com/~qed/optimize.html
