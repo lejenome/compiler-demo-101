@@ -49,17 +49,21 @@ C compilers:
     - HSA Intermediate Layer: Utilisé en HSA specification
 - version ancienne (4.3.1): contienne 2,029,115 lines in the main source et 1,546,826 lines in libraries. 57,825 fichiers + 52 configuration scripts + 163 Makefiles.
 ### lexical analyser overview:
-- determiner les sous-chaine et ses classes (sous-chaine: var1, class: identificateur)
-- token = <sous-chaine, classe>
+- determiner les sous-chaine (lexemes) et ses classes (sous-chaine: var1, class: identificateur)
+- token = <sous-chaine(lexeme), classe>
+- lookahead:
+  - `else` : id `e` ou keyword `else`
+  - `==`: assign `=` ou bool op `==`
+  - `>>` in c++: `cin >> var` vs `templ1<templ2<templ3>>`
 - instruction:   i = 5 + 2 ;
-        token string   | token type
-        -------------- | -------------------
-        foo            | identificateur
-        =              | assign operator
-        5              | number
-        +              | plus operator
-        2              | number
-        ;              | end of instruction
+        token string (lexeme)  | token type
+        ---------------------- | -------------------
+        foo                    | identificateur
+        =                      | assign operator
+        5                      | number
+        +                      | plus operator
+        2                      | number
+        ;                      | end of instruction
 
 ##### syntactic analyser:
 - génère AST depuis definitions du grammaire
