@@ -33,15 +33,15 @@ C compilers:
         - extensions : OpenMP, OpenACC
     - mutli platforms and OSs: tres grand nombre.
 ```
-    .........................Front-End....................              .....Middle-End..........              .......Back-End..................
-    +-------------+  +------------+  +-------------------+            +---------------------------+            +--------------------------------+
-    |  lexer /    |  | parser     |  | semantic          |            |    optimizer              |            |    target-related optimization |
-    | scanner     |  |            |  | analyzer          |    ==>     |                           |    ===>    |                                |
-    | (tokens)    |  | (AST)      |  | (check errors)    |            |                           |            |    obj code gen                |
-    +-------------+  +------------+  +-------------------+            +---------------------------+            +--------------------------------+
-        ( C )   ---->    (       AST     ) --->  ( GENERIC ) =======> ( GIMPLE ) -> (      SSA     )  ======> ( RTL ) --> ( ASM ) --> ( obj code )
+    .........................Front-End....................              .....Middle-End..........              .......Back-End.....................
+    +-------------+  +------------+  +-------------------+            +---------------------------+            +----------------------------------+
+    |  lexer /    |  | parser     |  | semantic          |            |    optimizer              |            |    target-dependent optimization |
+    | scanner     |  |            |  | analyzer          |    ==>     |                           |    ===>    |                                  |
+    | (tokens)    |  | (AST)      |  | (check errors)    |            |                           |            |    obj code gen                  |
+    +-------------+  +------------+  +-------------------+            +---------------------------+            +----------------------------------+
+    ( C ) -> ( tokens ) -> (      AST      ) ->  ( GENERIC ) =======> ( GIMPLE ) -> (      SSA     )  =======> ( RTL ) --> ( ASM ) --> ( obj code )
 
-    |....Flex.....|  |...Bison....|  |...................................LLVM...................................................................|
+    |....Flex.....|  |...Bison....|  |...................................LLVM.....................................................................|
 ```
 - autre IR output:
     - Standard Portable Intermediate Representation SPIR/SPIR-V: utilisé en OpenCl, OpenGL et Vulkan
