@@ -33,15 +33,15 @@ C compilers:
         - extensions : OpenMP, OpenACC
     - mutli platforms and OSs: tres grand nombre.
 ```
-    .........................Front-End....................              .....Middle-End....              .......Back-End....
-    +-------------+  +------------+  +-------------------+              +-------------------+            +-----------------+
-    |  lexer /    |  | parser     |  | semantic          |              |  optimizer        |            |    obj code     |
-    | scanner     |  |            |  | analyzer          |    ==>       |                   |    ===>    |    gen          |
-    | (tokens)    |  | (AST)      |  | (check errors)    |              |                   |            |                 |
-    +-------------+  +------------+  +-------------------+              +-------------------+            +-----------------+
-        ( C )   ----> ( AST : GENERIC )                   ========>   ( GIMPLE ) ---> ( RTL )  ====>   ( ASM ) ---> ( obj code )
+    .........................Front-End....................              .....Middle-End..........              .......Back-End..................
+    +-------------+  +------------+  +-------------------+            +---------------------------+            +--------------------------------+
+    |  lexer /    |  | parser     |  | semantic          |            |    optimizer              |            |    target-related optimization |
+    | scanner     |  |            |  | analyzer          |    ==>     |                           |    ===>    |                                |
+    | (tokens)    |  | (AST)      |  | (check errors)    |            |                           |            |    obj code gen                |
+    +-------------+  +------------+  +-------------------+            +---------------------------+            +--------------------------------+
+        ( C )   ---->    (       AST     ) --->  ( GENERIC ) =======> ( GIMPLE ) -> (      SSA     )  ======> ( RTL ) --> ( ASM ) --> ( obj code )
 
-    |....Flex.....|  |...Bison....|  |...................................LLVM..............................................|
+    |....Flex.....|  |...Bison....|  |...................................LLVM...................................................................|
 ```
 - autre IR output:
     - Standard Portable Intermediate Representation SPIR/SPIR-V: utilisé en OpenCl, OpenGL et Vulkan
@@ -74,9 +74,9 @@ C compilers:
     - erreurs de types
     - var non déclaré ou initialisé
     -
-- different lexicer, syntactic (et la plus tard different semantic) analyser pour chaque lang
+- different lexical, syntactic (et la plus tard different semantic) analyser pour chaque lang
 
-##### optimization:
+##### optimization (middle end):
 - généralement maximiser la vitesse d'exécution et minimiser le taille objet code generé:
     - pre-calculer la valeur d'une équation constante
     - éliminer les block mort (condition d'entrer est toujours false
@@ -85,6 +85,12 @@ C compilers:
     - `y * 8` => `y << 3`
     - `y % 32` => `y & 31`
     - `for(i = 0; i < 10; i++) printf("%u\n", i*10);` => `for(i = 0; i < 100; i+= 10) printf("%u\n", i);`
+    - algebraic simplifications: `i + 1 - i` => `1`
+    - constant folding: `5 + 3 - 1` => `7`
+    - Loop-invariant code motion: 
+       `for(i = 0; i < n i++;) { x= 5 * 2 * n; printf("hi");}` =>
+       `x = 10 * n; for(i = 0; i < n i++;) { printf("hi");}`
+    - Common sub-expression elimination: `x= 15 *n +2; y = 2 + 15 *n;` => `x=15*n+2; y = x;`
 - partie commun pour les plus tard des lang implementer
 - optimizations des floats et doubles expressions dangerous because of
     precision limitation:
@@ -99,6 +105,11 @@ C compilers:
 - more:
     - Wikipedia: Program_optimization
     - http://www.pobox.com/~qed/optimize.html
+##### optimization (back-end):
+- optimizations related to the target architecture:
+  - register allocation: prefer register over memory for more used variables
+  - Code scheduling: reorder instructions to execute on different stages of
+  execution
 ##### generation du code:
 - du presentation intermédiaire (AST ou autre implementation: SSA, IR, RTL) à code assembleur puis à code machine (obj code)
 - different implementation pour chaque type processus
@@ -165,6 +176,7 @@ Bison:
 
 **Workshop**: implementer bc basic, relational et Boolean Expression et precedence
 **Workshop**: implementer p
+**Workshop**: implementer parser for 2 formats (XML, json, ini, YAML, ...)
 
 AST:
 ===
