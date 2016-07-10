@@ -78,3 +78,7 @@ clean:
 	@ echo "    CLEAN" >&2
 	@ -$(RM) *.o $(APP).tab.* $(APP).lex.* $(APP).dot $(APP).output \
 		$(APP)_app $(APP) lex.backup # y.tab.* lex.yy.* y.output
+clean-all:
+	@ echo "    CLEAN-ALL" >&2
+	@ -$(RM) *.o *.tab.* *.lex.* *.dot *.output \
+		*.out lex.backup # y.tab.* lex.yy.* y.output

@@ -157,6 +157,7 @@ Flex:
     - Decimal
     - Hex
     - opérateur relationnel (+, -, *, /, %)
+**Workshop**: implement wc command line
 Bison:
 ======
 - file syntax et structure:
