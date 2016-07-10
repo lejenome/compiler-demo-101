@@ -24,9 +24,11 @@
 Compilateurs & GCC introduction:
 ================================
 Un compilateur est un outil  qui transforme un code source écrit dans un langage de programmation (le langage source) en un autre langage informatique (le langage cible).
+
 C compilers:
 - top: MVCC, GCC (mingw, cygwin), Clang/LLVM
 - autres: Turbo/Borland, intel compiler, wactom compiler, TCC, PCC
+
 ### GCC overview:
 - multi archs: ~ 70 archs including (ARM, x86, ...) : de supercomputer -> pc -> phones -> embed systems -> firmware/bios
 - multi langs:
@@ -54,12 +56,12 @@ C compilers:
 
 ### lexical analyser overview:
 - determiner les sous-chaine (lexemes) et ses classes (sous-chaine: var1, class: identificateur)
-- token = <sous-chaine(lexeme), classe>
+- token = `struct token { char *lexem /* sous-chaine */; enum tk_class class; }`
 - lookahead:
     - `else` : id `e` ou keyword `else`
     - `==`: assign `=` ou bool op `==`
     - `>>` in c++: `cin >> var` vs `templ1<templ2<templ3>>`
-- instruction:   i = 5 + 2 ;
+- instruction:   `i = 5 + 2 ;`
 
 token string (lexeme)  | token type
 ---------------------- | -------------------
@@ -233,12 +235,13 @@ LLVM:
     - pour avoir le code IR, utilise: `clang -S -emit-llvm file.c`
     - lli & llc
 - program Hello World sample en C (utilisé `puts` au lieu de `printf`) et son IR output ( `clang -S -emit-llvm app.c` )
-  ```c
-  #include <stdio.h>
-  int main() {
-    puts("Hello Wolrd!");
-  }
-  ```
+
+```c
+#include <stdio.h>
+int main() {
+  puts("Hello Wolrd!");
+}
+```
 - étudier le syntax du IR (app.ll) et le modifier et l' interpreter (lli) et le compiler (llc)
 - le réécrire en llvm-c
 - le réécrire en llvm cpp
