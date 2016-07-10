@@ -1,3 +1,6 @@
+Preface:
+========
+
 ### Outils:
 - Flex: `flex flex-doc`
 - Bison: `bison bison-doc`
@@ -23,6 +26,7 @@
 
 Compilateurs & GCC introduction:
 ================================
+
 Un compilateur est un outil  qui transforme un code source écrit dans un langage de programmation (le langage source) en un autre langage informatique (le langage cible).
 
 C compilers:
@@ -255,7 +259,8 @@ JIT:
 ??????
 
 
-### Related:
+Related:
+========
 - language theory (+ new diff langs: scala, python, ada, lisp/clojure, prolog)
 - programming patterns
 - OS arch and dev
