@@ -10,28 +10,31 @@
 - proxy-free wifi
 
 ### Resources Utile:
-    - Bison manual: `$ info bison`
-    - Flex manual: `$ info flex`
-    - C99 draf
-    - Gnu C Manual
-    - bc manual: `$ info bc -n "Basic Expressions"`
-    - GCC internals manual et autres manuals en: https://gcc.gnu.org/onlinedocs/
-    - Tutorials and docs on GCC Resource Center at IIT Bombay: http://www.cse.iitb.ac.in/grc/
+- Bison manual: `$ info bison`
+- Flex manual: `$ info flex`
+- C99 draf
+- Gnu C Manual
+- bc manual: `$ info bc -n "Basic Expressions"`
+- GCC internals manual et autres manuals en: https://gcc.gnu.org/onlinedocs/
+- Tutorials and docs on GCC Resource Center at IIT Bombay: http://www.cse.iitb.ac.in/grc/
+- Stanford CS143 course
+- Book: Compilers: principles, techniques and tools
+- Book: Parsing techniques: a practical guide
 
 Compilateurs & GCC introduction:
 ================================
 Un compilateur est un outil  qui transforme un code source écrit dans un langage de programmation (le langage source) en un autre langage informatique (le langage cible).
 C compilers:
-    - top: MVCC, GCC (mingw, cygwin), Clang/LLVM
-    - autres: Turbo/Borland, intel compiler, wactom compiler, TCC, PCC
+- top: MVCC, GCC (mingw, cygwin), Clang/LLVM
+- autres: Turbo/Borland, intel compiler, wactom compiler, TCC, PCC
 ### GCC overview:
-    - multi archs: ~ 70 archs including (ARM, x86, ...) :
-      de supercomputer -> pc -> phones -> embed systems -> firmware/bios
-    - multi langs:
-        - Principal: C, C++, obj-C, obj-C++, Fortan, Ada, Java, Go
-        - autres : Pascal, Mercury, Modula-{2,3}, PL/1, D, VHDL
-        - extensions : OpenMP, OpenACC
-    - mutli platforms and OSs: tres grand nombre.
+- multi archs: ~ 70 archs including (ARM, x86, ...) : de supercomputer -> pc -> phones -> embed systems -> firmware/bios
+- multi langs:
+  - Principal: C, C++, obj-C, obj-C++, Fortan, Ada, Java, Go
+  - autres : Pascal, Mercury, Modula-{2,3}, PL/1, D, VHDL
+  - extensions : OpenMP, OpenACC
+- mutli platforms and OSs: tres grand nombre.
+
 ```
     .........................Front-End....................              .....Middle-End..........              .......Back-End.....................
     +-------------+  +------------+  +-------------------+            +---------------------------+            +----------------------------------+
@@ -48,32 +51,35 @@ C compilers:
     - LLVM Intermediate Representation: utilisé en LLVM
     - HSA Intermediate Layer: Utilisé en HSA specification
 - version ancienne (4.3.1): contienne 2,029,115 lines in the main source et 1,546,826 lines in libraries. 57,825 fichiers + 52 configuration scripts + 163 Makefiles.
+
 ### lexical analyser overview:
 - determiner les sous-chaine (lexemes) et ses classes (sous-chaine: var1, class: identificateur)
 - token = <sous-chaine(lexeme), classe>
 - lookahead:
-  - `else` : id `e` ou keyword `else`
-  - `==`: assign `=` ou bool op `==`
-  - `>>` in c++: `cin >> var` vs `templ1<templ2<templ3>>`
+    - `else` : id `e` ou keyword `else`
+    - `==`: assign `=` ou bool op `==`
+    - `>>` in c++: `cin >> var` vs `templ1<templ2<templ3>>`
 - instruction:   i = 5 + 2 ;
-        token string (lexeme)  | token type
-        ---------------------- | -------------------
-        foo                    | identificateur
-        =                      | assign operator
-        5                      | number
-        +                      | plus operator
-        2                      | number
-        ;                      | end of instruction
+
+token string (lexeme)  | token type
+---------------------- | -------------------
+foo                    | identificateur
+=                      | assign operator
+5                      | number
++                      | plus operator
+2                      | number
+;                      | end of instruction
 
 ##### syntactic analyser:
 - génère AST depuis definitions du grammaire
 - erreurs de syntax détecté la
 - `gcc -E file.c` to get pre-processed c code
+
 ##### semantic analyser:
 - détecté les erreurs semantic:
     - erreurs de types
     - var non déclaré ou initialisé
-    -
+    - ...
 - different lexical, syntactic (et la plus tard different semantic) analyser pour chaque lang
 
 ##### optimization (middle end):
@@ -105,11 +111,13 @@ C compilers:
 - more:
     - Wikipedia: Program_optimization
     - http://www.pobox.com/~qed/optimize.html
+
 ##### optimization (back-end):
 - optimizations related to the target architecture:
   - register allocation: prefer register over memory for more used variables
   - Code scheduling: reorder instructions to execute on different stages of
   execution
+
 ##### generation du code:
 - du presentation intermédiaire (AST ou autre implementation: SSA, IR, RTL) à code assembleur puis à code machine (obj code)
 - different implementation pour chaque type processus
@@ -157,7 +165,9 @@ Flex:
     - Decimal
     - Hex
     - opérateur relationnel (+, -, *, /, %)
+
 **Workshop**: implement wc command line
+
 Bison:
 ======
 - file syntax et structure:
@@ -176,7 +186,9 @@ Bison:
 - reduce/reduce & shift/reduce conflicts (exemples et solutions)
 
 **Workshop**: implementer bc basic, relational et Boolean Expression et precedence
+
 **Workshop**: implementer p
+
 **Workshop**: implementer parser for 2 formats (XML, json, ini, YAML, ...)
 
 AST:
