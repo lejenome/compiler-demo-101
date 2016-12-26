@@ -45,6 +45,25 @@ C compilers:
   - extensions : OpenMP, OpenACC
 - mutli platforms and OSs: tres grand nombre.
 
+**TODO:** GCC vs BinUtils
+**TODO:** cpp -> cc1/cc1plus -> as -> ld
+- `gcc -E main.c -o main.i`
+- `gcc -S main.i -o main.s -masm=intel`
+- `gcc -c main.s -o main.o`
+- `gcc main.o -o main`
+**TODO:**
+- `clang -cc1 main.c -emit-llvm -disable-llvm-passes`
+- [Online LLVM IR Gen](http://ellcc.org/demo/index.cgi)
+- `clang -cc1 main.c -ast-print`
+- `clang -cc1 main.c -ast-dump`
+- `clang -cc1 main.c -ast-view`
+- `clang -cc1 main.c -dump-tokens`
+- `gcc -O0 -o main main.c -fdump-tree-all -fdump-rtl-all` :
+  - `main.c.003t.original`: AST
+  - `main.c.004t.gimple`: GIMPLE
+  - `main.c.011t.cfg`: CFG
+  - `main.c.???r.*`: RTL IR
+
 ```
     .........................Front-End....................              .....Middle-End..........              .......Back-End.....................
     +-------------+  +------------+  +-------------------+            +---------------------------+            +----------------------------------+
