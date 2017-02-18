@@ -1,11 +1,12 @@
-Goal:
-=========
+# Compiler Design Overview
+
+## Goal
+
 Introduction to compiler design and tech.
 
-Preface:
-========
+## Preface
 
-### Outils:
+### Outils
 
 - Flex: `flex flex-doc`
 - Bison: `bison bison-doc`
@@ -17,7 +18,7 @@ Preface:
 - Ubuntu 14.04.4 i386 virtual image for VirtualBox and VMware
 - proxy-free wifi
 
-### Resources Utile:
+### Resources Utile
 
 - Bison manual: `$ info bison`
 - Flex manual: `$ info flex`
@@ -30,8 +31,7 @@ Preface:
 - Book: Compilers: principles, techniques and tools
 - Book: Parsing techniques: a practical guide
 
-Compilateurs & GCC introduction:
-================================
+## Compilateurs & GCC introduction
 
 Un compilateur est un outil  qui transforme un code source écrit dans un langage de programmation (le langage source) en un autre langage informatique (le langage cible).
 
@@ -39,7 +39,7 @@ C compilers:
 - top: MVCC, GCC (mingw, cygwin), Clang/LLVM
 - autres: Turbo/Borland, intel compiler, wactom compiler, TCC, PCC
 
-### GCC overview:
+### GCC overview
 
 - multi archs: ~ 70 archs including (ARM, x86, ...) : de supercomputer -> pc -> phones -> embed systems -> firmware/bios
 - multi langs:
@@ -94,7 +94,7 @@ C compilers:
   - HSA Intermediate Layer: Utilisé en HSA specification
 - version ancienne (4.3.1): contienne 2,029,115 lines in the main source et 1,546,826 lines in libraries. 57,825 fichiers + 52 configuration scripts + 163 Makefiles.
 
-### lexical analyser overview:
+### lexical analyser overview
 
 - determiner les sous-chaine (lexemes) et ses classes (sous-chaine: var1, class: identificateur)
 - token = `struct token { char *lexem /* sous-chaine */; enum tk_class class; }`
@@ -113,13 +113,13 @@ foo                    | identificateur
 2                      | number
 ;                      | end of instruction
 
-##### syntactic analyser:
+##### syntactic analyser
 
 - génère AST depuis definitions du grammaire
 - erreurs de syntax détecté la
 - `gcc -E file.c` to get pre-processed c code
 
-##### semantic analyser:
+##### semantic analyser
 
 - détecté les erreurs semantic:
   - erreurs de types
@@ -127,7 +127,7 @@ foo                    | identificateur
   - ...
 - different lexical, syntactic (et la plus tard different semantic) analyser pour chaque lang
 
-##### optimization (middle end):
+##### optimization (middle end)
 
 - généralement maximiser la vitesse d'exécution et minimiser le taille objet code generé:
   - pre-calculer la valeur d'une équation constante
@@ -158,14 +158,14 @@ foo                    | identificateur
   - Wikipedia: Program_optimization
   - http://www.pobox.com/~qed/optimize.html
 
-##### optimization (back-end):
+##### optimization (back-end)
 
 - optimizations related to the target architecture:
   - register allocation: prefer register over memory for more used variables
   - Code scheduling: reorder instructions to execute on different stages of
   execution
 
-##### generation du code:
+##### generation du code
 
 - du presentation intermédiaire (AST ou autre implementation: SSA, IR, RTL) à code assembleur puis à code machine (obj code)
 - different implementation pour chaque type processus
@@ -194,8 +194,7 @@ foo                    | identificateur
     - CLR: génère un code pour la platform .Net, (un peu specific pour windows et x86)
     - JVM: génère un code pour la platform Java, multi platform.
 
-Flex:
-=====
+## Flex
 
 - intro: syntax and file struct:
   - %{ CODE C %}
@@ -218,8 +217,7 @@ Flex:
 
 **Workshop**: implement wc command line
 
-Bison:
-======
+## Bison
 
 - file syntax et structure:
   - %{ CODE C %}        %code (top|requires|provide|) ( CODE C )
@@ -242,8 +240,7 @@ Bison:
 
 **Workshop**: implementer parser for 2 formats (XML, json, ini, YAML, ...)
 
-AST:
-===
+## AST
 
 - Implementation simple en C++
 - `friend cout& operator<<(...)`
@@ -253,8 +250,7 @@ AST:
 - control flow: if, for, while, do..while, switch
 - functions
 
-LLVM:
-=====
+## LLVM
 
 - LLVM et Clang intro:
   - A l'origine, un remplacement pour le midlle-end (et partie du back-end) du GCC
@@ -299,15 +295,13 @@ int main() {
 - ajoute LLVM output à notre AST `::Codegen()`
 - Optimization passes
 
-JIT:
-===
+## JIT
 
 - intro
 - implementation avec LLVM
 ??????
 
-Related:
-========
+## Related
 
 - language theory (+ new diff langs: scala, python, ada, lisp/clojure, prolog)
 - programming patterns
